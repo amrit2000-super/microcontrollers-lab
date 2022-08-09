@@ -1,35 +1,31 @@
-AREA PROG19,CODE,READONLY
-ENTRY
-STORAGE EQU 0X40000000
-        LDR SP, =STORAGE
-        LDR R3, =STORAGE + 200
-NUM     EQU 11
-SIZE    EQU 1
-        ADR R6, ARRAY
-        MOV R1, #0
-        MOV R2, #NUM - 1
-        MOV R5, #17 ;search value
-        STMDB R3!, {R6,R1,R2,R5, R0}
-MAIN    BL FINDIT
-        B MAIN
-FINDIT
-        STMDB SP!, {R4,R7,R8,R9,R10,R11,R12,LR}
-        LDMFD R3!, {R11,R7,R8,R10, R0}
-        CMP R7, R8
-        BGT STOP
-        ADD R9, R7, R8
-        MOV R9, R9, ASR #1
-        LDR R12, [R11, R9,LSL #2]
-        ADD R11, R9, LSL #2
-        MOV R0, R11
-        ADD R4, R9, LSL #1
-        CMP R12, R10
-        SUBGT R8, R9, #1
-        ADDLE R7, R9, #1
-        LDR R11, [R3, #-4]
-        STMFD R3!, {R11,R7,R8,R10, R0}
-        LDMIA SP!, {R4,R7,R8,R9,R10,R11,R12,PC}
-        MOV PC, LR
-STOP B STOP
-ARRAY DCD 3,6,8,12,17,22,45,67,99,2089,30001
-END
+ area proj16,code,readonly
+entry
+      ldr r0,=array
+	  ldr r1,=key
+	  mov r2,#0
+	  mov r3,#5
+	  mov r4,#0
+	  mov r6,#1
+	  mov r7,#4
+	  ldr r9,[r1]
+loop  cmp r2,r3
+      movgt r4,#-1
+	  bgt stop
+	  mov r5,#0
+	  add r5,r2,r3
+	  mov r5,r5,lsr #1
+	  mul r6,r7,r5
+	  add r0,r0,r6
+	  ldr r8,[r0]
+	  sub r0,r0,r6
+	  cmp r9,r8
+	  sublt r3,r5,#1
+	  addgt r2,r5,#1
+	  moveq r4,#1
+	  beq stop
+	  bal loop
+stop b stop
+array dcd 10,20,30,40,50,60
+key dcd 50
+end
+
